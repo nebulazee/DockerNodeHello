@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+
+<body>
+
+    <p>Click the button to get your coordinates.</p>
+
+
+    <button onclick="getNearbyPlaces()">
+        Get Nearby Places
+    </button>
+    <p id="demo"></p>
+
+
+</body>
+<script type="text/javascript">
+    var x;
+    window.onload = () => {
+        x = document.getElementById("demo");
+    }
+    let latitudes;
+    let longitudes;
+
+    var getNearbyPlaces = () => {
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            x.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+    showPosition = (position) => {
+        /* x.innerHTML = "Latitude: " + position.coords.latitude +
+            "<br>Longitude: " + position.coords.longitude; */
+        latitudes = position.coords.latitude;
+        longitudes = position.coords.longitude;
+        getLocations(latitudes, longitudes);
+    }
+    getLocations = (latitudes, longitudes) => {
+        let url = 'http://localhost:3000/getPlaces?latitude=' + latitudes + '&longitude=' + longitudes;
+        fetch(url).then(u => u.json()).then((json) => {
+            console.log(json);
+            console.log(typeof (json))
+            for (i of json) {
+                console.log(i);
+                x.innerHTML = x.innerHTML + "<br> Place : " + i.place + " at a distance of " + i.distance;
+            }
+        })
+    }
+</script>
+
+</html>
